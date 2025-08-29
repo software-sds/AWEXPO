@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  expo-app:
+    build: .
+    ports:
+      - "19000:19000"  # Expo development server
+      - "19001:19001"  # Expo DevTools
+      - "19002:19002"  # Expo tunnel
+    environment:
+      - NODE_ENV=development
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+    volumes:
+      # Mount the source code for hot reloading during development
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    # Health check to ensure the app is running
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:19000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
